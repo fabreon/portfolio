@@ -1,0 +1,390 @@
+/* ============================================================
+   Portfolio v3 — Minimal Tech / Monochrome
+   左ラベル縦書き + 縦罫線 + 上部スラッシュ装飾（モック v3-03 準拠）
+   ============================================================ */
+
+:root {
+  --bg: #FAFAFA;
+  --bg-alt: #F4F4F3;
+  --ink: #111111;
+  --ink-sub: #6B7280;
+  --ink-faint: #9CA3AF;
+  --border: #E2E2E0;
+  --white: #FFFFFF;
+
+  --font-sans: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --frame: 1680px;      /* フレーム・縦罫線はほぼ全幅 */
+  --rail-w: clamp(80px, 7vw, 130px);  /* 左ラベル列の幅 */
+  --pad: clamp(28px, 4vw, 64px);      /* 本文の左パディング */
+  --content: 760px;     /* 本文（右カラム）の最大幅 */
+  --head-w: 180px;      /* セクション見出し（左カラム）の幅 */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.8;
+  font-feature-settings: "palt";
+  line-break: strict;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* a11y: キーボードフォーカスの可視化 */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* a11y: 動きを抑えたいユーザーへの配慮 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.br-mobile { display: none; }
+
+/* ============ FRAME（外枠：左右に縦罫線） ============ */
+.frame {
+  max-width: var(--frame);
+  margin: 0 auto;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+/* ============ BLOCK（各セクション = 左ラベル + 本文） ============ */
+.block {
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+}
+.block:not(:last-child) { border-bottom: 1px solid var(--border); }
+.block--alt { background: var(--bg-alt); }
+
+/* --- 左ラベル列（縦罫線 + 番号 + 縦書き名） --- */
+.block__rail {
+  border-right: 1px solid var(--border);
+  padding: 28px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.rail__num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+}
+.rail__name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: var(--ink-sub);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);   /* 下から上に読む向き */
+}
+
+/* --- 本文（フレームは全幅のまま、中身は落ち着いた幅で左寄せ） --- */
+.block__main {
+  padding: 28px var(--pad) clamp(56px, 8vw, 104px);
+  min-width: 0;
+  max-width: calc(var(--content) + var(--head-w) + var(--pad) * 2);
+  justify-self: start;
+}
+
+/* セクションは「左に見出し / 右に本文」の2カラム */
+.block__main:has(.block__content) {
+  display: grid;
+  grid-template-columns: var(--head-w) 1fr;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+
+/* セクション見出し（About / Skills / Works）= 左余白カラムの中央付近 */
+.block__heading {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--ink);
+}
+/* 単独（Heroなど2カラムでない）見出し用の下マージン */
+.block__main:not(:has(.block__content)) .block__heading { margin-bottom: 36px; }
+
+/* ============ 上部の横罫線 + 右端スラッシュ ============ */
+.topline {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: clamp(48px, 9vh, 110px);
+}
+.topline__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.topline__slash {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--ink-faint);
+}
+
+/* ============ HERO ============ */
+.hero { padding-bottom: clamp(20px, 5vh, 60px); }
+.hero__title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(44px, 7.4vw, 84px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.hero__l1, .hero__l2 { display: block; }
+.hero__slash { color: var(--ink-faint); font-weight: 400; margin-left: 0.1em; }
+.hero__sub {
+  margin-top: 30px;
+  font-size: clamp(15px, 2vw, 19px);
+  color: var(--ink-sub);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ============ ABOUT ============ */
+.about__lead {
+  font-size: clamp(19px, 2.6vw, 25px);
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  margin-bottom: 24px;
+}
+.about__text {
+  font-size: 14.5px;
+  color: var(--ink-sub);
+  max-width: 60ch;
+  margin-bottom: 44px;
+}
+.about__meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  max-width: 680px;
+}
+.about__meta dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.about__meta dd { font-size: 14px; font-weight: 500; }
+
+/* ============ SKILLS ============ */
+.skills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+.skill__title {
+  font-size: 16px;
+  font-weight: 700;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--ink);
+}
+.skill__desc {
+  font-size: 13px;
+  color: var(--ink-sub);
+  line-height: 1.75;
+  margin-bottom: 18px;
+}
+.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tags li {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-sub);
+  border: 1px solid var(--border);
+  background: var(--white);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* ============ WORKS ============ */
+.works {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 7vw, 80px);
+}
+.work {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+.work__thumb {
+  display: block;
+  border: 1px solid var(--border);
+  background: var(--white);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+}
+.work__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.work__thumb:hover img { transform: scale(1.04); }
+
+.work__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.work__num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+.work__cat {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-sub);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+.work__title {
+  font-size: clamp(23px, 3.2vw, 31px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+  word-break: keep-all;        /* 熟語を途中で割らない */
+  overflow-wrap: anywhere;     /* 入りきらない時の保険 */
+}
+.work__desc {
+  font-size: 13.5px;
+  color: var(--ink-sub);
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+.work__tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.work__tags li {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-sub);
+}
+.work__tags li:not(:last-child)::after {
+  content: "·";
+  margin-left: 8px;
+  color: var(--ink-faint);
+}
+.work__links { display: flex; gap: 18px; }
+.work__links a {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--ink);
+  transition: opacity 0.2s ease;
+}
+.work__links a:hover { opacity: 0.55; }
+
+/* 偶数番目は画像を右に（ジグザグ） */
+.work:nth-child(even) .work__thumb { order: 2; }
+
+/* ============ FOOTER ============ */
+.block--footer .block__main {
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-self: center;   /* フッターは中央寄せ */
+  align-items: center;
+  text-align: center;
+}
+.footer__github {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  width: fit-content;
+  padding-bottom: 4px;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.footer__github:hover { border-bottom-color: var(--ink); }
+.footer__note {
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.7;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .work { grid-template-columns: 1fr; gap: 20px; }
+  .work:nth-child(even) .work__thumb { order: 0; }
+}
+
+/* 中画面: 左見出しカラムを少し狭める */
+@media (max-width: 1000px) {
+  :root { --head-w: 140px; }
+}
+
+/* タブレット以下: 見出しを上に積んで左寄せ（1カラム化） */
+@media (max-width: 760px) {
+  .block__main:has(.block__content) {
+    display: block;
+  }
+  .block__heading {
+    text-align: left;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root { --rail-w: 44px; }
+  .br-mobile { display: inline; }
+  .block__rail { padding: 20px 0; gap: 12px; }
+  .rail__num { font-size: 10px; }
+  .rail__name { font-size: 9.5px; letter-spacing: 0.2em; }
+  .block__main { padding: 20px 20px 64px; }
+  .skills { grid-template-columns: 1fr; gap: 28px; }
+  .about__meta { grid-template-columns: 1fr; gap: 18px; }
+  .topline { margin-bottom: 48px; }
+}
+
+@media (max-width: 400px) {
+  :root { --rail-w: 38px; }
+  .block__main { padding: 18px 16px 56px; }
+}

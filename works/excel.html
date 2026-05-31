@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EC受注データ統合・集計ツール — Works</title>
+  <meta name="description" content="複数ECの受注CSV（楽天・Amazon・自社BASE等）をドラッグ&ドロップで統合・集計・グラフ化し、Excelで出力する業務自動化ツール。月末の集計2時間を数秒に。" />
+  <meta name="theme-color" content="#FAFAFA" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="EC受注データ統合・集計ツール" />
+  <meta property="og:description" content="複数ECの受注CSVをドラッグ&ドロップで統合・集計・グラフ化し、Excelで出力。月末2時間→数秒。" />
+  <meta property="og:image" content="../images/work-excel.jpg" />
+  <meta property="og:locale" content="ja_JP" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EC受注データ統合・集計ツール" />
+  <meta name="twitter:description" content="複数ECの受注CSVをドラッグ&ドロップで統合・集計・グラフ化し、Excelで出力。月末2時間→数秒。" />
+  <meta name="twitter:image" content="../images/work-excel.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    /* ===== 作品詳細ページ専用 ===== */
+    .detail { max-width: 980px; margin: 0 auto; padding: 0 var(--pad); }
+    .detail__back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 13px; color: var(--ink-sub);
+      padding: 28px 0 0; transition: gap .25s ease, color .2s ease;
+    }
+    .detail__back:hover { gap: 14px; color: var(--ink); }
+
+    .detail__topline { display: flex; align-items: center; gap: 18px; margin: 28px 0 clamp(40px,7vh,80px); }
+    .detail__topline .rule { flex: 1; height: 1px; background: var(--border); }
+    .detail__topline .slash { font-family: var(--font-mono); color: var(--ink-faint); font-size: 16px; }
+
+    .detail__cat {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em;
+      color: var(--ink-sub); border: 1px solid var(--border);
+      padding: 4px 12px; border-radius: 4px; display: inline-block; margin-bottom: 20px;
+    }
+    .detail__title {
+      font-size: clamp(34px, 6vw, 60px); font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.12; margin-bottom: 18px;
+      word-break: keep-all; overflow-wrap: anywhere;
+    }
+    .detail__lead {
+      font-size: clamp(16px, 2.2vw, 20px); color: var(--ink-sub);
+      font-weight: 500; line-height: 1.85; margin-bottom: clamp(48px,8vh,80px);
+      word-break: keep-all; overflow-wrap: anywhere;  /* 語の途中で割らない */
+    }
+
+    .overview-lead {
+      font-size: 15px; color: var(--ink); font-weight: 500;
+      line-height: 1.85; margin-bottom: 40px;
+    }
+
+    .detail__section { padding: clamp(40px,7vh,72px) 0; border-top: 1px solid var(--border); }
+    .detail__head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 32px; }
+    .detail__num { font-family: var(--font-mono); font-size: 12px; color: var(--ink-faint); }
+    .detail__label { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+
+    /* intro grid */
+    .intro { display: grid; grid-template-columns: 1fr 1fr; gap: 44px 56px; }
+    .intro__item { border-top: 1px solid var(--ink); padding-top: 18px; }
+    .intro__item dt {
+      font-family: var(--font-sans); font-size: 16px; font-weight: 700;
+      color: var(--ink); margin-bottom: 14px; letter-spacing: -0.01em;
+    }
+    .intro__item dd { font-size: 14px; color: var(--ink); line-height: 1.9; }
+    .intro__item dd .muted { color: var(--ink-sub); }
+
+    /* 注記 */
+    .detail__note {
+      margin-top: 40px; padding: 15px 18px;
+      border-left: 2px solid var(--ink-faint); background: var(--bg-alt);
+      font-size: 12.5px; color: var(--ink-sub); line-height: 1.85;
+    }
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li { font-size: 14px; color: var(--ink-sub); line-height: 1.9; padding-left: 18px; position: relative; }
+    .feature-list li::before { content: "—"; position: absolute; left: 0; color: var(--ink-faint); }
+
+    /* demo */
+    .demo-note {
+      font-size: 12.5px; color: var(--ink-sub); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px; line-height: 1.7;
+    }
+
+    /* プレビュー（クリックでモーダル起動） */
+    .demo-launch {
+      display: block; width: 100%; padding: 0; border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--white);
+      position: relative; line-height: 0;
+    }
+    .demo-launch img { width: 100%; display: block; }
+    .demo-launch__overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(17,17,17,0); transition: background .25s ease;
+    }
+    .demo-launch:hover .demo-launch__overlay { background: rgba(17,17,17,.32); }
+    .demo-launch__play {
+      font-family: var(--font-mono); font-size: 14px; font-weight: 600; line-height: 1;
+      color: #fff; background: rgba(17,17,17,.88); padding: 13px 24px; border-radius: 6px;
+      opacity: 0; transform: scale(.96); transition: transform .25s ease, opacity .2s ease;
+    }
+    .demo-launch:hover .demo-launch__play { opacity: 1; transform: scale(1); }
+
+    /* actions */
+    .actions { display: flex; flex-wrap: wrap; gap: 16px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono); font-size: 13.5px; font-weight: 500;
+      padding: 14px 22px; border-radius: 6px; transition: all .2s ease;
+    }
+    .btn--primary { background: var(--ink); color: var(--white); border: 1px solid var(--ink); }
+    .btn--primary:hover { opacity: .85; }
+    .btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    .btn--ghost:hover { border-color: var(--ink); }
+    .btn__sub { font-size: 11px; color: var(--ink-faint); }
+    .btn--primary .btn__sub { color: rgba(255,255,255,.6); }
+
+    .detail__footer {
+      border-top: 1px solid var(--border); padding: clamp(40px,7vh,64px) 0;
+      text-align: center;
+    }
+    .detail__footer a {
+      font-family: var(--font-mono); font-size: 13px; color: var(--ink-sub);
+      border-bottom: 1px solid transparent; padding-bottom: 3px; transition: border-color .2s;
+    }
+    .detail__footer a:hover { border-bottom-color: var(--ink); }
+
+    @media (max-width: 720px) {
+      .intro { grid-template-columns: 1fr; gap: 28px; }
+      .demo-frame { height: 680px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="frame">
+    <div class="detail">
+
+      <a class="detail__back" href="../index.html#works"><span aria-hidden="true">←</span> Portfolio</a>
+
+      <div class="detail__topline">
+        <span class="rule"></span>
+        <span class="slash">/</span>
+      </div>
+
+      <!-- ===== ヘッダー ===== -->
+      <header>
+        <span class="detail__cat">業務自動化ツール</span>
+        <h1 class="detail__title">EC受注データ<wbr>統合・集計ツール</h1>
+        <p class="detail__lead">
+          複数ECの受注CSV（楽天・Amazon・自社BASE 等）を、<br>
+          ドラッグ&ドロップで統合・集計・グラフ化して、Excel で出力。<br>
+          月末の集計作業「2時間 → 数秒」を実現します。
+        </p>
+      </header>
+
+      <!-- ===== 01 概要 ===== -->
+      <section class="detail__section">
+        <div class="detail__head">
+          <span class="detail__num">01</span>
+          <h2 class="detail__label">概要</h2>
+        </div>
+        <p class="overview-lead">下記のような場面を想像して制作しました。</p>
+        <dl class="intro">
+          <div class="intro__item">
+            <dt>誰のため</dt>
+            <dd>
+              副業でEC運営をしている個人事業主の方。<br>
+              <span class="muted">例として、ハンドメイドアクセサリーを楽天・Amazon・自社BASEの3チャネルで販売する想定で設計しました。</span>
+            </dd>
+          </div>
+          <div class="intro__item">
+            <dt>解決する問題</dt>
+            <dd>
+              各ECの受注CSVは列名がバラバラ（注文日 / purchase-date / order_date …）。<br>
+              <span class="muted">毎月それを手作業で揃えて統合・集計していた「月末2時間」を、数秒に短縮します。</span>
+            </dd>
+          </div>
+          <div class="intro__item">
+            <dt>主な機能</dt>
+            <dd>
+              <ul class="feature-list">
+                <li>ファイル名・列名からプラットフォームを自動判別</li>
+                <li>類義語辞書で列マッピングを自動推測</li>
+                <li>商品別・プラットフォーム別・日別の集計をグラフ付き Excel で出力</li>
+                <li>対応プラットフォームの追加・編集をブラウザ内で完結（設定UI内蔵）</li>
+              </ul>
+            </dd>
+          </div>
+          <div class="intro__item">
+            <dt>技術</dt>
+            <dd>
+              Python / Streamlit / pandas / openpyxl / matplotlib / plotly。<br>
+              <span class="muted">データはお使いのPC内だけで処理し、クラウドには送信しません。</span>
+            </dd>
+          </div>
+        </dl>
+        <p class="detail__note">
+          ※ ペルソナ（田中さん）やサンプルデータは、ポートフォリオ用に想定した架空のものです。ツールそのものは実際に動作します。
+        </p>
+      </section>
+
+      <!-- ===== 02 デモ ===== -->
+      <section class="detail__section">
+        <div class="detail__head">
+          <span class="detail__num">02</span>
+          <h2 class="detail__label">ブラウザで試す</h2>
+        </div>
+        <p class="demo-note">
+          <span aria-hidden="true">↗</span>
+          下のプレビューをクリックすると、別タブでデモが開きます。<br class="br-mobile" />
+          （初回はサーバー起動のため 30秒〜1分ほどかかります。PC での閲覧がおすすめです）
+        </p>
+        <a class="demo-launch" href="https://excel-automation-zzudypozffdci5bbzt2d7y.streamlit.app/" target="_blank" rel="noopener noreferrer">
+          <img src="../images/work-excel.jpg" alt="EC受注データ統合ツールの操作画面プレビュー" loading="lazy" />
+          <span class="demo-launch__overlay"><span class="demo-launch__play">▶ デモを開く ↗</span></span>
+        </a>
+      </section>
+
+      <!-- ===== 03 ダウンロード / 詳しく ===== -->
+      <section class="detail__section">
+        <div class="detail__head">
+          <span class="detail__num">03</span>
+          <h2 class="detail__label">手元で使う・詳しく見る</h2>
+        </div>
+        <div class="actions">
+          <a class="btn btn--primary" href="https://github.com/fabreon/excel-automation/releases/download/v1.0-windows/EC-Order-Integration-Tool_v1.0_windows.zip">
+            <span>⬇ Windows版をダウンロード</span>
+            <span class="btn__sub">約150MB / Python不要・ダブルクリック起動</span>
+          </a>
+          <a class="btn btn--ghost" href="https://github.com/fabreon/excel-automation" target="_blank" rel="noopener noreferrer">
+            GitHub で実装を見る ↗
+          </a>
+        </div>
+      </section>
+
+      <div class="detail__footer">
+        <a href="../index.html#works"><span aria-hidden="true">←</span> 作品一覧に戻る</a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

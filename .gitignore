@@ -1,0 +1,22 @@
+# 開発ツール・作業物
+tools/
+.claude/
+.vercel
+
+# 内部ドキュメント（非公開）
+BRIEF.md
+
+# モック・素材の元ファイル（サイトでは未使用 / サイズ大）
+images/portfolio-mock-*.png
+images/work-pop-bloom-hero.png
+images/work-pop-bloom-full.png
+images/work-pop-bloom-full.jpg
+images/work-morning-hill-hero.png
+images/work-excel-app.png
+images/work-excel-chart.png
+images/work-excel-chart.jpg
+
+# OS / その他
+.DS_Store
+Thumbs.db
+*.tmp
