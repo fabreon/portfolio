@@ -1,5 +1,7 @@
 # Portfolio — Web制作 / 業務自動化
 
+**🌐 Live: https://fabreon-portfolio.vercel.app**
+
 AIを使って、小さな仕事を速く・丁寧に。Web制作（ランディングページ）と業務自動化ツールの制作実績をまとめた、自己紹介・作品ショーケースサイト。
 
 ## 🎨 デザイン
