@@ -20,3 +20,5 @@ images/work-excel-chart.jpg
 .DS_Store
 Thumbs.db
 *.tmp
+
+.vercel

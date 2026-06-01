@@ -1,8 +1,8 @@
-# Portfolio — Web制作 / 業務自動化
+# Portfolio — Web制作 / 作業の自動化
 
 **🌐 Live: https://fabreon-portfolio.vercel.app**
 
-AIを使って、小さな仕事を速く・丁寧に。Web制作（ランディングページ）と業務自動化ツールの制作実績をまとめた、自己紹介・作品ショーケースサイト。
+AIを使って、小さな仕事を速く・丁寧に。Web制作（ランディングページ）と、作業を自動化するツールの制作実績をまとめた、自己紹介・作品ショーケースサイト。
 
 ## 🎨 デザイン
 
@@ -31,7 +31,7 @@ portfolio-site-v3/
 
 - **Pop Bloom** — Y2K maximalism のLP（Vanilla / AI画像生成）
 - **Morning Hill** — 朝活カフェのLP（クラフト / OGP・JSON-LD）
-- **EC受注データ統合ツール** — 複数ECの受注CSVを統合・集計する業務自動化ツール（Python / Streamlit）
+- **EC受注データ統合ツール** — 複数ECの受注CSVを統合・集計する、作業を自動化するツール（Python / Streamlit）
 
 ---
 
